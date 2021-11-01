@@ -2,14 +2,14 @@
 
 const mongoose = require('mongoose')
 const app = require('./app')
-const port = process.env.PORT || 3001
+const config = require('./config')
 
-mongoose.connect('mongodb://localhost:27017/shop', (err, res) => {
+mongoose.connect(config.db, (err, res) => {
     if (err) {
         return console.log(`Error al conectar a la DB: ${err}`)
     }
     console.log('Conectado a la DB correctamente')
-    app.listen(port, () => {
-        console.log(`API REST conrriendo en http://localhost:${port}`)
+    app.listen( config.port, () => {
+        console.log(`API REST conrriendo en http://localhost:${config.port}`)
     })
 })

@@ -1,8 +1,6 @@
 'use strict'
 
 const Product = require('../models/product')
-const bodyParser = require('body-parser')
-const mongoose = require('mongoose')
 
 function getProductByID ( req, res ){
     let productId = req.params.productId
