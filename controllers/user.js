@@ -9,7 +9,8 @@ function singUp( req, res ) {
         lastname : req.body.lastname,
         displayName : req.body.displayName,
         email : req.body.email,
-        avatar : req.body.avatar
+        avatar : req.body.avatar,
+        password : req.body.password
     })
 
     user.save((err) => {
