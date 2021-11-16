@@ -15,7 +15,8 @@ app.engine('.hbs', hbs({
 }))
 app.set('view engine', '.hbs')
 
-app.use('/api', api)
+app.use('/api/v1', api)
+
 app.use('/login', (req, res) => {
     res.render('login')
 })

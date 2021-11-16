@@ -1,0 +1,13 @@
+// app.locals.mailObject 		= helper_mail.init(nodemailer.createTransport(mailerConfig.development)); // For development
+// app.locals.mailObject 		= helper_mail.init(nodemailer.createTransport(sgTransport(mailerConfig.production))); // For production
+app.locals.sendMail_newUser = helper_mail.sendMail_newUser;
+app.locals.sendMail_alert 	= helper_mail.sendMail_alert;
+app.locals.sendMail_recover	= helper_mail.sendMail_recover;
+app.locals.sendMail_newPassword = helper_mail.sendMail_newPassword;
+app.locals.sendHighPriorityMail = helper_mail.highPriorityMail;
+app.locals.sendMail_declinedUser = helper_mail.sendMail_declinedUser;
+app.locals.sendMail_approvedUser = helper_mail.sendMail_approvedUser;
+app.locals.sendMail_resetPassword = helper_mail.sendMail_resetPassword;
+app.locals.sendMail_updatePassword = helper_mail.sendMail_updatePassword;
+app.locals.sendMail_newBasicUser = helper_mail.sendMail_newBasicUser;
+app.locals.sendMail_forgotPassword = helper_mail.sendMail_forgotPassword;
