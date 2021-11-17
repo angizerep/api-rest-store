@@ -24,6 +24,14 @@ const UserSchema = new Schema ({
         default: Date.now
     },
     lastLogin: Date
+},
+{
+    toJSON: {
+        transform(doc, ret) {
+        delete ret.password;
+        delete ret.__v;
+        },
+    },
 })
 
 UserSchema.pre('save', function(next) {
