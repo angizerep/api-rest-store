@@ -2,8 +2,10 @@
 
 const User = require('../models/user')
 const service = require('../services')
+var transporter = require('../helpers/mailer')
 
 function singUp( req, res ) {
+    console.log('Estoy en singUp')
     const user = new User ({
         name : req.body.name,
         lastname : req.body.lastname,
@@ -13,10 +15,19 @@ function singUp( req, res ) {
         password : req.body.password
     })
 
-    user.save((err) => {
-        if (err) return res.status(500).send({message: `Error al registrar el usuario: ${err}`})
+    user.save((err, userSaved) => {
+        if (err) {
+            return res.status(500).send({message: `Error al registrar el usuario: ${err}`})
+        }
         
-        res.status(200).send({ token: service.createToken })
+        else{
+            try {
+                res.status(200).send({ userSaved })
+                transporter.sendMailRegister( userSaved.email );
+            } catch (err) {
+                return res.status(400).send({message: err })
+            }
+        }
     })
 
 }
