@@ -22,7 +22,7 @@ function singUp( req, res ) {
         
         else{
             try {
-                res.status(200).send({ userSaved })
+                //res.status(200).send({ userSaved })
                 transporter.sendMailRegister( userSaved.email );
             } catch (err) {
                 return res.status(400).send({message: err })
