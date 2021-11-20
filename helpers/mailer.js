@@ -28,6 +28,10 @@ function sendMailRegister( email ) {
             {
                 console.log(err);
             }
+            else
+            {
+                console.log('sendMailRegister Sent')
+            }
         });
     // })
 }
