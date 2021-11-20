@@ -6,19 +6,33 @@ const crypto = require('crypto')
 const Schema = mongoose.Schema
 
 const UserSchema = new Schema ({
-    name: String,
-    lastname: String,
-    displayName: String,
+	name:   {
+		type: String,
+		required: 'Name is required'
+	},
+    lastname:   {
+		type: String,
+		unique: true,
+		required: 'Lastname is required'
+	},
+    displayName:   {
+		type: String,
+		unique: true,
+		required: 'DisplayName is required'
+	},
     email: {
         type: String,
         unique: true,
-        lowercase: true
+        lowercase: true,
+        required: 'Email is required',
+        match: [/^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/, 'Please fill a valid email address']
     },
     avatar : String,
-    password: {
-        type: String,
-        select: false
-    },
+    // password: {
+    //     type: String,
+    //     select: false,
+    //     required: 'Password is required'
+    // },
     singUpDate: {
         type: Date,
         default: Date.now
@@ -34,21 +48,21 @@ const UserSchema = new Schema ({
     },
 })
 
-UserSchema.pre('save', function(next) {
-    let user = this
-    if (!user.isModified('password')) return next()
+// UserSchema.pre('save', function(next) {
+//     let user = this
+//     if (!user.isModified('password')) return next()
 
-    bcrypt.genSalt(10, (err, salt) => {
-        if (err) return next()
+//     bcrypt.genSalt(10, (err, salt) => {
+//         if (err) return next()
 
-        bcrypt.hash(user.password, salt, null, (err, hash) =>{
-            if (err) return next(err)
+//         bcrypt.hash(user.password, salt, null, (err, hash) =>{
+//             if (err) return next(err)
 
-            user.password = hash
-            next();
-        })
-    })
-})
+//             user.password = hash
+//             next();
+//         })
+//     })
+// })
 
 UserSchema.methods.gravatar = function () {
     if (!this.email) return `https://gravatar.com/avatar/?s=200&d=retro`

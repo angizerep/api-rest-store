@@ -2,48 +2,38 @@
 
 const nodemailer = require("nodemailer");
 var emailTemplates = require("email-templates").EmailTemplates
+const config = require('../configMail')
 
-const transporter = nodemailer.createTransport({
-    host: "smtp.gmail.com",
-    port: 465,
-    secure: true,
-    auth: {
-        user: '',
-        pass: '',
-    },
+const transporter = nodemailer.createTransport( config.development, {
     connectionTimeout: 5 * 60 * 1000, // 5 min
 });
 
 function sendMailRegister( email ) {
 
-    console.log('ESTOY EN sendMailRegister')
+    // var template = new emailTemplates('../emailTemplate/register')
+    // template.render( params, function (ee, res) {
 
-    var template = new emailTemplates('../emailTemplate/register')
-
-    template.render( params, function (ee, res) {
-
-        console.log('ESTOY EN RENDER')
-
-        if (err) {
-            console.log('ESTOY EN EL PRIMER ERROR')
-            return console.error(err)
-        }
+        // if (err) {
+        //     console.log('ESTOY EN EL PRIMER ERROR')
+        //     return console.error(err)
+        // }
 
         let mailOptions = {
-            from: 'devcode18@gmail.com',
             to: email,
             subject: 'Register PRUEBAAA',
-            html: res.html,
+            html: "<b>Hello world?</b>",
         };
         transporter.sendMail(mailOptions, function (err,info) {
             if(err)
             {
-                console.log('ESTOY EN 2do error')
-
                 console.log(err);
             }
+            else
+            {
+                console.log('sendMailRegister Sent')
+            }
         });
-    })
+    // })
 }
 
 transporter.verify( () => {
