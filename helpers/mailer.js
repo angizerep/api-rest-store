@@ -1,7 +1,7 @@
 "use strict";
 
 const nodemailer = require("nodemailer");
-var emailTemplates = require("email-templates").EmailTemplates
+// var emailTemplates = require("email-templates").EmailTemplates
 const config = require('../configMail')
 
 const transporter = nodemailer.createTransport( config.development, {
