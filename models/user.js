@@ -12,7 +12,6 @@ const UserSchema = new Schema ({
 	},
     lastname:   {
 		type: String,
-		unique: true,
 		required: 'Lastname is required'
 	},
     displayName:   {
@@ -37,7 +36,15 @@ const UserSchema = new Schema ({
         type: Date,
         default: Date.now
     },
-    lastLogin: Date
+    lastLogin: Date,
+    active: {
+        type : Boolean,
+        default: true
+    },
+    statusDeleted: {
+        type : Boolean,
+        default: false
+    }
 },
 {
     toJSON: {
