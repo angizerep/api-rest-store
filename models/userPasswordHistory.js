@@ -13,7 +13,7 @@ const UserPasswordHistorySchema = new Schema ({
     },
     password: {
         type: String,
-        select: false
+        // select: false
     },
     created_at: {
         type : Date,
@@ -27,24 +27,26 @@ const UserPasswordHistorySchema = new Schema ({
         type : Boolean,
         default: true
     }
-},
-{
-    toJSON: {
-        transform(doc, ret) {
-        delete ret.password;
-        delete ret.__v;
-        },
-    },
+// },
+// {
+//     toJSON: {
+//         transform(doc, ret) {
+//         delete ret.password;
+//         delete ret.__v;
+//         },
+//     },
 })
 
 UserPasswordHistorySchema.pre('save', function(next) {
     let userPassword = this
-        console.log('userPassword ',userPassword)
+        console.log('userPassword obtenido ',userPassword)
 
-    if (!userPassword.isModified('password')) return next()
+    // if (!userPassword.isModified('password')) return next()
 
     bcrypt.genSalt(10, (err, salt) => {
         if (err) return next()
+
+        console.log(userPassword.password)
 
         bcrypt.hash(userPassword.password, salt, null, (err, hash) =>{
             if (err) return next(err)

@@ -80,26 +80,46 @@ function singIn ( req, res ){
 
 function changePassword ( req, res ){
     
+    let isEqual = false;
+
     User.findOne({ email: req.body.email }, (err, userFound) => { 
         if (err) return res.status(500).send({message: err})
         if (!userFound) return res.status(404).send({message: 'No existe el usuario'})
         else {
+            console.log('userFound ', userFound)
+
             UserPasswordHistory.find({ 
-                user: userFound.email,
-                status : true 
+                user: userFound._id
             }, (err, userPasswordFound) => { 
                 if (err) return res.status(500).send({message: err})
                 if (!userPasswordFound) return res.status(404).send({message: 'No existe el usuario'})
                 else {
+
+                    let userPassword = '$2a$10$6YrIcYuwV1dBWIiB/Em3WOzFVBlxAQGhxhjjqZ6CdUgmDs5s42K72' //req.body.password
+                    console.log('userPassword ',userPassword)
+
+
+                    console.log('userPasswordFound ', userPasswordFound)
                     async.mapSeries( userPasswordFound, function(element , callback){
-                        bcrypt.compare(req.body.password, element, function(err, resp) {
-                            if (err){
-                                res.status(404).send({message: 'passwords do not match'})
-                            }
+                        console.log('element ',element)
+                        bcrypt.compare(req.body.password, userPassword, function(err, resp) {
+                            // if (err){
+                            //     console.log('ERR Primero')
+                            //     res.status(404).send({message: 'passwords do not match'})
+                            // }
                             if (resp){
-                                break;
+                              // Send JWT
+                                console.log('IF ', resp)
+                                // res.status(200).send({
+                                //     message: 'Te has logueado correctamente',
+                                //     token: service.createToken(userFound)
+                                // })
+                                isEqual = true;
                             } else {
-                                res.status(404).send({message: 'passwords do not match'})
+                                isEqual = false;
+                                console.log('Else ', resp)
+                                console.log('Error ', err)
+                                // res.status(404).send({message: 'passwords do not match'})
                             }
                         });
                     } )
@@ -110,7 +130,7 @@ function changePassword ( req, res ){
 }
 
 module.exports = {
-
+    changePassword,
     singUp,
     singIn
 }
