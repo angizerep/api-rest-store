@@ -100,9 +100,11 @@ function changePassword ( req, res ){
 
 
                     console.log('userPasswordFound ', userPasswordFound)
+                    console.log('userPasswordFound leng ', userPasswordFound.lenght)
+
                     async.mapSeries( userPasswordFound, function(element , callback){
                         console.log('element ',element)
-                        bcrypt.compare(req.body.password, userPassword, function(err, resp) {
+                        bcrypt.compare(req.body.password, element.password, function(err, resp) {
                             // if (err){
                             //     console.log('ERR Primero')
                             //     res.status(404).send({message: 'passwords do not match'})
@@ -115,14 +117,26 @@ function changePassword ( req, res ){
                                 //     token: service.createToken(userFound)
                                 // })
                                 isEqual = true;
+                                return callback;
                             } else {
                                 isEqual = false;
                                 console.log('Else ', resp)
                                 console.log('Error ', err)
+                                return callback;
                                 // res.status(404).send({message: 'passwords do not match'})
                             }
                         });
                     } )
+
+                    if (callback){
+                        if ( isEqual === true ) {
+                            res.status(404).send({message: 'MAL'})
+                        }
+                        else{
+                            console.log('Todo normal')
+                            res.status(200).send({message: 'BIEEEN'})
+                        }
+                    }
                 }
             })
         }
