@@ -95,48 +95,7 @@ function changePassword ( req, res ){
                 if (!userPasswordFound) return res.status(404).send({message: 'No existe el usuario'})
                 else {
 
-                    let userPassword = '$2a$10$6YrIcYuwV1dBWIiB/Em3WOzFVBlxAQGhxhjjqZ6CdUgmDs5s42K72' //req.body.password
-                    console.log('userPassword ',userPassword)
 
-
-                    console.log('userPasswordFound ', userPasswordFound)
-                    console.log('userPasswordFound leng ', userPasswordFound.lenght)
-
-                    async.mapSeries( userPasswordFound, function(element , callback){
-                        console.log('element ',element)
-                        bcrypt.compare(req.body.password, element.password, function(err, resp) {
-                            // if (err){
-                            //     console.log('ERR Primero')
-                            //     res.status(404).send({message: 'passwords do not match'})
-                            // }
-                            if (resp){
-                              // Send JWT
-                                console.log('IF ', resp)
-                                // res.status(200).send({
-                                //     message: 'Te has logueado correctamente',
-                                //     token: service.createToken(userFound)
-                                // })
-                                isEqual = true;
-                                return callback;
-                            } else {
-                                isEqual = false;
-                                console.log('Else ', resp)
-                                console.log('Error ', err)
-                                return callback;
-                                // res.status(404).send({message: 'passwords do not match'})
-                            }
-                        });
-                    } )
-
-                    if (callback){
-                        if ( isEqual === true ) {
-                            res.status(404).send({message: 'MAL'})
-                        }
-                        else{
-                            console.log('Todo normal')
-                            res.status(200).send({message: 'BIEEEN'})
-                        }
-                    }
                 }
             })
         }
@@ -160,48 +119,6 @@ function inactivateUser ( req, res ){
                 if (!userPasswordFound) return res.status(404).send({message: 'No existe el usuario'})
                 else {
 
-                    let userPassword = '$2a$10$6YrIcYuwV1dBWIiB/Em3WOzFVBlxAQGhxhjjqZ6CdUgmDs5s42K72' //req.body.password
-                    console.log('userPassword ',userPassword)
-
-
-                    console.log('userPasswordFound ', userPasswordFound)
-                    console.log('userPasswordFound leng ', userPasswordFound.lenght)
-
-                    async.mapSeries( userPasswordFound, function(element , callback){
-                        console.log('element ',element)
-                        bcrypt.compare(req.body.password, element.password, function(err, resp) {
-                            // if (err){
-                            //     console.log('ERR Primero')
-                            //     res.status(404).send({message: 'passwords do not match'})
-                            // }
-                            if (resp){
-                              // Send JWT
-                                console.log('IF ', resp)
-                                // res.status(200).send({
-                                //     message: 'Te has logueado correctamente',
-                                //     token: service.createToken(userFound)
-                                // })
-                                isEqual = true;
-                                return callback;
-                            } else {
-                                isEqual = false;
-                                console.log('Else ', resp)
-                                console.log('Error ', err)
-                                return callback;
-                                // res.status(404).send({message: 'passwords do not match'})
-                            }
-                        });
-                    } )
-
-                    if (callback){
-                        if ( isEqual === true ) {
-                            res.status(404).send({message: 'MAL'})
-                        }
-                        else{
-                            console.log('Todo normal')
-                            res.status(200).send({message: 'BIEEEN'})
-                        }
-                    }
                 }
             })
         }
