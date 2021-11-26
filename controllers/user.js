@@ -79,23 +79,55 @@ function singIn ( req, res ){
 }
 
 function changePassword ( req, res ){
-    
+
     let isEqual = false;
 
     User.findOne({ email: req.body.email }, (err, userFound) => { 
         if (err) return res.status(500).send({message: err})
         if (!userFound) return res.status(404).send({message: 'No existe el usuario'})
         else {
-            console.log('userFound ', userFound)
-
             UserPasswordHistory.find({ 
                 user: userFound._id
             }, (err, userPasswordFound) => { 
                 if (err) return res.status(500).send({message: err})
                 if (!userPasswordFound) return res.status(404).send({message: 'No existe el usuario'})
                 else {
-
-
+                    async.mapSeries(userPasswordFound, function (element, callback) {
+                        if ( isEqual === false ){
+                            bcrypt.compare(req.body.password, element.password, function(err, resp) {
+                                try {
+                                    if (resp){
+                                        isEqual = true
+                                        res.status(404).send({message: 'The password cannot be the same as the one used the last 5 times'})
+                                    }else {
+                                        isEqual = false
+                                        callback()
+                                    }
+                                } catch (err) {
+                                    if (err) return res.status(500).send({message: err})
+                                }
+                            });
+                        }
+                        else{
+                            callback()
+                        }
+                    }, function() {
+                        if ( isEqual === false ){
+                            const userPassword = new UserPasswordHistory ({
+                                user : userFound,
+                                password : req.body.password
+                            })
+                            userPassword.save((err, userPassword) => {
+                                if (err) {
+                                    return res.status(500).send({message: `Error al guardar la contraseña del usuario: ${err}`})
+                                }
+                                else{
+                                    res.status(200).send({ userPassword })
+                                    transporter.sendMailRegister( userFound.email );
+                                }
+                            })
+                        }
+                    })
                 }
             })
         }
