@@ -148,18 +148,29 @@ function changePassword ( req, res ){
 }
 
 function desactivateOldPassword ( userPasswordList, cb ){
-    const userPassword = new UserPasswordHistory ({
-        user : user,
-        password : password
-    })
-    userPassword.save((err, userPassword) => {
-        if (err) {
-            return res.status(500).send({message: `Error al guardar la contraseña del usuario: ${err}`})
+
+    async.mapSeries(userPasswordList, function (element, callback) {
+        UserPasswordHistory.findByIdAndUpdate( element._id , {
+            active: false
+        }, {new : true},function(err, userPasswordHistoryUpdated) {
+            if (err)
+                res.status(400).json(err);
+            else if (!user)
+                res.status(404).send();
+            else
+                callback();
+        });
+    }, function() {
+        if ( isEqual === false ){
+
+            if ( userPasswordList.lenght >= 4 ){
+                console.log('userPasswordList ',userPasswordList)
+            }
+            
         }
-        else{
-            cb(userPassword)
-        }
     })
+
+
 }
 
 function saveNewPassword ( user, password, cb ){
