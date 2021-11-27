@@ -113,19 +113,14 @@ function changePassword ( req, res ){
                         }
                     }, function() {
                         if ( isEqual === false ){
-                            const userPassword = new UserPasswordHistory ({
-                                user : userFound,
-                                password : req.body.password
-                            })
-                            userPassword.save((err, userPassword) => {
-                                if (err) {
-                                    return res.status(500).send({message: `Error al guardar la contraseña del usuario: ${err}`})
-                                }
-                                else{
-                                    res.status(200).send({ userPassword })
+                            saveNewPassword( userFound , req.body.password, function(cb, err) {
+                                if ( cb ){
+                                    console.log('volvimos')
+                                    res.status(200).send({ cb })
                                     transporter.sendMailRegister( userFound.email );
                                 }
-                            })
+                            }) 
+                            
                         }
                     })
                 }
@@ -133,6 +128,22 @@ function changePassword ( req, res ){
         }
     })
 }
+
+function saveNewPassword ( user, password, cb ){
+    const userPassword = new UserPasswordHistory ({
+        user : user,
+        password : password
+    })
+    userPassword.save((err, userPassword) => {
+        if (err) {
+            return res.status(500).send({message: `Error al guardar la contraseña del usuario: ${err}`})
+        }
+        else{
+            cb(userPassword)
+        }
+    })
+}
+
 
 function inactivateUser ( req, res ){
     
