@@ -113,18 +113,51 @@ function changePassword ( req, res ){
                         }
                     }, function() {
                         if ( isEqual === false ){
-                            saveNewPassword( userFound , req.body.password, function(cb, err) {
+
+                            desactivateOldPassword( userPasswordFound, function(cb, err) {
                                 if ( cb ){
-                                    console.log('volvimos')
-                                    res.status(200).send({ cb })
-                                    transporter.sendMailRegister( userFound.email );
+                                    saveNewPassword( userFound , req.body.password, function(cb, err) {
+                                        if ( cb ){
+                                            console.log('volvimos')
+                                            res.status(200).send({ cb })
+                                            transporter.sendMailRegister( userFound.email );
+                                        }
+                                    }) 
+                                    // console.log('volvimos')
+                                    // res.status(200).send({ cb })
+                                    // transporter.sendMailRegister( userFound.email );
                                 }
-                            }) 
+                            }
+                            // , function(){
+                            //     saveNewPassword( userFound , req.body.password, function(cb, err) {
+                            //         if ( cb ){
+                            //             console.log('volvimos')
+                            //             res.status(200).send({ cb })
+                            //             transporter.sendMailRegister( userFound.email );
+                            //         }
+                            //     }) 
+                            // } 
+                            )
                             
                         }
                     })
                 }
             })
+        }
+    })
+}
+
+function desactivateOldPassword ( userPasswordList, cb ){
+    const userPassword = new UserPasswordHistory ({
+        user : user,
+        password : password
+    })
+    userPassword.save((err, userPassword) => {
+        if (err) {
+            return res.status(500).send({message: `Error al guardar la contraseña del usuario: ${err}`})
+        }
+        else{
+            cb(userPassword)
         }
     })
 }
@@ -143,7 +176,6 @@ function saveNewPassword ( user, password, cb ){
         }
     })
 }
-
 
 function inactivateUser ( req, res ){
     
