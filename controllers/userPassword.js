@@ -20,7 +20,7 @@ function saveUserPasswordHistory( req, res ) {
         else{
             try {
                 res.status(200).send({ userSaved })
-                transporter.sendMailRegister( userSaved.email );
+                transporter.sendMailRegister( userSaved.email )
             } catch (err) {
                 return res.status(400).send({message: err })
             }

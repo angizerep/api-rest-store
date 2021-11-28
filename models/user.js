@@ -66,7 +66,7 @@ const UserSchema = new Schema ({
 //             if (err) return next(err)
 
 //             user.password = hash
-//             next();
+//             next()
 //         })
 //     })
 // })
