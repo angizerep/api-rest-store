@@ -36,7 +36,7 @@ function singUp( req, res ) {
                     }
                     else{
                         res.status(200).send({ userPassword })
-                        transporter.sendMailRegister( userSaved.email );
+                        transporter.sendMailRegister( userSaved.email )
                     }
                 })
             } catch (err) {
@@ -47,21 +47,23 @@ function singUp( req, res ) {
 }
 
 function singIn ( req, res ){
+    console.log('ACA ')
     User.findOne({ email: req.body.email }, (err, userFound) => { 
         if (err) return res.status(500).send({message: err})
         if (!userFound) return res.status(404).send({message: 'No existe el usuario'})
         else {
+            console.log('ACA ')
             UserPasswordHistory.find({ 
-                user: userFound.email,
+                user: userFound._id,
                 status : true 
             }, (err, userPasswordFound) => { 
                 if (err) return res.status(500).send({message: err})
                 if (!userPasswordFound) return res.status(404).send({message: 'No existe el usuario'})
                 else {
-                    bcrypt.compare(req.body.password, userFound.password, function(err, resp) {
-                        if (err){
-                            res.status(404).send({message: 'passwords do not match'})
-                        }
+                    bcrypt.compare(req.body.password, userPasswordFound[0].password, function(err, resp) {
+                        // if (err){
+                        //     res.status(404).send({message: 'passwords do not match'})
+                        // }
                         if (resp){
                           // Send JWT
                             res.status(200).send({
@@ -71,7 +73,7 @@ function singIn ( req, res ){
                         } else {
                             res.status(404).send({message: 'passwords do not match'})
                         }
-                    });
+                    })
                 }
             })
         }
@@ -80,7 +82,7 @@ function singIn ( req, res ){
 
 function changePassword ( req, res ){
 
-    let isEqual = false;
+    let isEqual = false
 
     User.findOne({ email: req.body.email }, (err, userFound) => { 
         if (err) return res.status(500).send({message: err})
@@ -106,26 +108,31 @@ function changePassword ( req, res ){
                                 } catch (err) {
                                     if (err) return res.status(500).send({message: err})
                                 }
-                            });
+                            })
                         }
                         else{
                             callback()
                         }
                     }, function() {
                         if ( isEqual === false ){
+                            console.log('Por acá')
+                            console.log('Por acá', typeof userPasswordFound)
 
                             desactivateOldPassword( userPasswordFound, function(cb, err) {
                                 if ( cb ){
-                                    saveNewPassword( userFound , req.body.password, function(cb, err) {
-                                        if ( cb ){
-                                            console.log('volvimos')
-                                            res.status(200).send({ cb })
-                                            transporter.sendMailRegister( userFound.email );
-                                        }
-                                    }) 
+
+                                    //FUNCIONA
+                                    // saveNewPassword( userFound , req.body.password, function(cb, err) {
+                                    //     if ( cb ){
+                                    //         console.log('volvimos')
+                                    //         res.status(200).send({ cb })
+                                    //         transporter.sendMailRegister( userFound.email )
+                                    //     }
+                                    // })
+
                                     // console.log('volvimos')
                                     // res.status(200).send({ cb })
-                                    // transporter.sendMailRegister( userFound.email );
+                                    // transporter.sendMailRegister( userFound.email )
                                 }
                             }
                             // , function(){
@@ -133,7 +140,7 @@ function changePassword ( req, res ){
                             //         if ( cb ){
                             //             console.log('volvimos')
                             //             res.status(200).send({ cb })
-                            //             transporter.sendMailRegister( userFound.email );
+                            //             transporter.sendMailRegister( userFound.email )
                             //         }
                             //     }) 
                             // } 
@@ -148,21 +155,54 @@ function changePassword ( req, res ){
 }
 
 function desactivateOldPassword ( userPasswordList, cb ){
-    const userPassword = new UserPasswordHistory ({
-        user : user,
-        password : password
-    })
-    userPassword.save((err, userPassword) => {
-        if (err) {
-            return res.status(500).send({message: `Error al guardar la contraseña del usuario: ${err}`})
-        }
-        else{
-            cb(userPassword)
+    console.log('userPasswordListuserPasswordListuserPasswordList ', userPasswordList)
+    
+    var list = userPasswordList
+
+    console.log('Object.fromEntries(array);    ', Object.fromEntries(userPasswordList)    )
+
+    console.log('desactivateOldPassword')
+
+    var finalArray = userPasswordList.map(function (obj) {
+        return obj._id;
+    });
+    console.log('finalArray ',finalArray);
+
+
+    async.mapSeries(userPasswordList, function (element, callback) {
+
+        console.log('Update userPasswordList')
+
+        UserPasswordHistory.findByIdAndUpdate( element._id , {
+            active: false
+        }, {new : true},function(err, userPasswordHistoryUpdated) {
+            if (err){
+                console.log('ERROR')
+                res.status(400).json(err)
+            }
+            else if (!userPasswordHistoryUpdated){
+                console.log('ELSE IF')
+                res.status(404).send()
+            }
+            else{
+                console.log('ELSE')
+                callback()
+            }
+        })
+    }, function() {
+        console.log('+++++ userPasswordList ',userPasswordList )
+        console.log('+_+_+_+_+_+_+_+_+_+_+_+_+_+_+_+_+_+_+_+_+ userPasswordList ', typeof userPasswordList )
+
+        if ( userPasswordList.lenght >= 4 ){
+            console.log('userPasswordList ', userPasswordList)
+            // cb('VALE')
         }
     })
 }
 
 function saveNewPassword ( user, password, cb ){
+    console.log('saveNewPassword')
+
     const userPassword = new UserPasswordHistory ({
         user : user,
         password : password
@@ -179,7 +219,7 @@ function saveNewPassword ( user, password, cb ){
 
 function inactivateUser ( req, res ){
     
-    let isEqual = false;
+    let isEqual = false
 
     User.findOne({ email: req.body.email }, (err, userFound) => { 
         if (err) return res.status(500).send({message: err})
@@ -202,7 +242,7 @@ function inactivateUser ( req, res ){
 
 function deleteUser ( req, res ){
     
-    let isEqual = false;
+    let isEqual = false
 
     User.findOne({ email: req.body.email }, (err, userFound) => { 
         if (err) return res.status(500).send({message: err})
@@ -238,16 +278,16 @@ function deleteUser ( req, res ){
                                 //     message: 'Te has logueado correctamente',
                                 //     token: service.createToken(userFound)
                                 // })
-                                isEqual = true;
-                                return callback;
+                                isEqual = true
+                                return callback
                             } else {
-                                isEqual = false;
+                                isEqual = false
                                 console.log('Else ', resp)
                                 console.log('Error ', err)
-                                return callback;
+                                return callback
                                 // res.status(404).send({message: 'passwords do not match'})
                             }
-                        });
+                        })
                     } )
 
                     if (callback){

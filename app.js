@@ -5,7 +5,7 @@ const api = require('./routes/routes')
 const app = express()
 const hbs = require('express-handlebars')
 
-app.use(express.urlencoded({extended: false}));
+app.use(express.urlencoded({extended: false}))
 app.use(express.json())
 
 // Configuración motor de plantilla
