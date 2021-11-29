@@ -9,7 +9,7 @@ const crypto = require('crypto')
 const async = require('async')
 
 function singUp( req, res ) {
-    console.log('Estoy en singUp')
+    console.log('SingUp')
     const user = new User ({
         name : req.body.name,
         lastname : req.body.lastname,
@@ -94,7 +94,7 @@ function changePassword ( req, res ){
                 if (err) return res.status(500).send({message: err})
                 if (!userPasswordFound) return res.status(404).send({message: 'No existe el usuario'})
                 else {
-                    console.log('ESTETETETETE ', typeof userPasswordFound )
+                    // var size = Object.keys(userPasswordFound).length;
                     async.mapSeries(userPasswordFound, function (element, callback) {
                         if ( isEqual === false ){
                             bcrypt.compare(req.body.password, element.password, function(err, resp) {
@@ -116,35 +116,20 @@ function changePassword ( req, res ){
                         }
                     }, function() {
                         if ( isEqual === false ){
-
-                            desactivateOldPassword( userPasswordFound, function(cb, err) {
+                            deactivateOldPassword( userPasswordFound, function(cb, err) {
                                 if ( cb ){
-
-                                    //FUNCIONA
-                                    // saveNewPassword( userFound , req.body.password, function(cb, err) {
-                                    //     if ( cb ){
-                                    //         console.log('volvimos')
-                                    //         res.status(200).send({ cb })
-                                    //         transporter.sendMailRegister( userFound.email )
-                                    //     }
-                                    // })
-
-                                    // console.log('volvimos')
-                                    // res.status(200).send({ cb })
-                                    // transporter.sendMailRegister( userFound.email )
+                                    deleteOldPassword( userPasswordFound, function(cb, err) {
+                                        if ( cb ){
+                                            saveNewPassword( userFound, req.body.password, function(cb, err) {
+                                                if ( cb ){
+                                                    res.status(200).send({ cb })
+                                                    transporter.sendMailChangePassword( userFound.email )
+                                                }
+                                            })
+                                        }
+                                    })
                                 }
-                            }
-                            // , function(){
-                            //     saveNewPassword( userFound , req.body.password, function(cb, err) {
-                            //         if ( cb ){
-                            //             console.log('volvimos')
-                            //             res.status(200).send({ cb })
-                            //             transporter.sendMailRegister( userFound.email )
-                            //         }
-                            //     }) 
-                            // } 
-                            )
-                            
+                            })
                         }
                     })
                 }
@@ -153,25 +138,9 @@ function changePassword ( req, res ){
     })
 }
 
-function desactivateOldPassword ( userPasswordList, cb ){
-    console.log('userPasswordListuserPasswordListuserPasswordList ', userPasswordList)
-    
-    var list = userPasswordList
-
-    console.log('Object.fromEntries(array);    ', Object.fromEntries(userPasswordList)    )
-
-    console.log('desactivateOldPassword')
-
-    var finalArray = userPasswordList.map(function (obj) {
-        return obj._id;
-    });
-    console.log('finalArray ',finalArray);
-
-
+function deactivateOldPassword ( userPasswordList, cb ){
+    console.log('deactivateOldPassword')
     async.mapSeries(userPasswordList, function (element, callback) {
-
-        console.log('Update userPasswordList')
-
         UserPasswordHistory.findByIdAndUpdate( element._id , {
             active: false
         }, {new : true},function(err, userPasswordHistoryUpdated) {
@@ -189,14 +158,33 @@ function desactivateOldPassword ( userPasswordList, cb ){
             }
         })
     }, function() {
-        console.log('+++++ userPasswordList ',userPasswordList )
-        console.log('+_+_+_+_+_+_+_+_+_+_+_+_+_+_+_+_+_+_+_+_+ userPasswordList ', typeof userPasswordList )
-
-        if ( userPasswordList.lenght >= 4 ){
-            console.log('userPasswordList ', userPasswordList)
-            // cb('VALE')
-        }
+            cb('VALE')
     })
+}
+
+function deleteOldPassword ( userPasswordList, cb ){
+    console.log('deleteOldPassword')
+    
+    if ( userPasswordList.length > 4 ){
+        console.log('deleteOldPassword')
+
+        let userPasswordID = userPasswordList[0]._id
+
+        UserPasswordHistory.findById( userPasswordID, (err, userPassword) => {
+            if (err) return res.status(500).send({message: `Error a buscar el password: ${err}`})
+            if (!userPassword) return res.status(404).send({message: `El password no existe`})
+            
+            userPassword.remove( err => {
+                if (err) return res.status(500).send({message: `Error al password: ${err}`})
+                else{
+                    cb('VALE')
+                }
+            })
+        })
+    }
+    else{
+        cb('VALE')
+    }
 }
 
 function saveNewPassword ( user, password, cb ){
