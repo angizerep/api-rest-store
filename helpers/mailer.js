@@ -29,7 +29,7 @@ function sendMailRegister( email ) {
 function sendMailChangePassword( email ) {
     let mailOptions = {
         to: email,
-        subject: 'Register PRUEBAAA',
+        subject: 'Update Password',
         html: "<b>Hello world?</b>",
     }
     transporter.sendMail(mailOptions, function (err,info) {
@@ -39,7 +39,7 @@ function sendMailChangePassword( email ) {
         }
         else
         {
-            console.log('sendMailRegister Sent')
+            console.log('sendMailChangePassword Sent')
         }
     })
 }
