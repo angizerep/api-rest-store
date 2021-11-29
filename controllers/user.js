@@ -94,6 +94,7 @@ function changePassword ( req, res ){
                 if (err) return res.status(500).send({message: err})
                 if (!userPasswordFound) return res.status(404).send({message: 'No existe el usuario'})
                 else {
+                    console.log('ESTETETETETE ', typeof userPasswordFound )
                     async.mapSeries(userPasswordFound, function (element, callback) {
                         if ( isEqual === false ){
                             bcrypt.compare(req.body.password, element.password, function(err, resp) {
@@ -115,8 +116,6 @@ function changePassword ( req, res ){
                         }
                     }, function() {
                         if ( isEqual === false ){
-                            console.log('Por acá')
-                            console.log('Por acá', typeof userPasswordFound)
 
                             desactivateOldPassword( userPasswordFound, function(cb, err) {
                                 if ( cb ){
