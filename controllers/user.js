@@ -9,7 +9,7 @@ const crypto = require('crypto')
 const async = require('async')
 
 function singUp( req, res ) {
-    console.log('Estoy en singUp')
+    console.log('SingUp')
     const user = new User ({
         name : req.body.name,
         lastname : req.body.lastname,
@@ -117,7 +117,7 @@ function changePassword ( req, res ){
                     }, function() {
                         if ( isEqual === false ){
 
-                            desactivateOldPassword( userPasswordFound, function(cb, err) {
+                            deactivateOldPassword( userPasswordFound, function(cb, err) {
                                 if ( cb ){
 
                                     //FUNCIONA
@@ -153,7 +153,7 @@ function changePassword ( req, res ){
     })
 }
 
-function desactivateOldPassword ( userPasswordList, cb ){
+function deactivateOldPassword ( userPasswordList, cb ){
     console.log('userPasswordListuserPasswordListuserPasswordList ', userPasswordList)
     
     var list = userPasswordList
