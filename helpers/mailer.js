@@ -80,13 +80,51 @@ function sendMailEditUserInformation( email ) {
     })
 }
 
+function sendMailInactivateUser( email ) {
+    let mailOptions = {
+        to: email,
+        subject: 'Register PRUEBAAA',
+        html: "<b>Hello world?</b>",
+    }
+    transporter.sendMail(mailOptions, function (err,info) {
+        if(err)
+        {
+            console.log(err)
+        }
+        else
+        {
+            console.log('sendMailRegister Sent')
+        }
+    })
+}
+
+function sendMailDeleteUser( email ) {
+    let mailOptions = {
+        to: email,
+        subject: 'Register PRUEBAAA',
+        html: "<b>Hello world?</b>",
+    }
+    transporter.sendMail(mailOptions, function (err,info) {
+        if(err)
+        {
+            console.log(err)
+        }
+        else
+        {
+            console.log('sendMailRegister Sent')
+        }
+    })
+}
+
 transporter.verify( () => {
     console.log('Ready for send email')
 })
 
 module.exports = {
     sendMailRegister,
-    sendMailEditUserInformation,
+    sendMailDeleteUser,
     sendMailForgotPassword,
-    sendMailChangePassword
+    sendMailChangePassword,
+    sendMailInactivateUser,
+    sendMailEditUserInformation    
 }
