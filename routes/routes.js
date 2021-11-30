@@ -35,5 +35,7 @@ api.route('/singin')
     .post(userController.singIn)
 api.route('/updatepassword')
     .post(userController.changePassword)
+api.route('/forgotpassword')
+    .post(userController.forgotPassword)
 
 module.exports = api

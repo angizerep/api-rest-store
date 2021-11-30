@@ -44,6 +44,24 @@ function sendMailChangePassword( email ) {
     })
 }
 
+function sendMailForgotPassword( email, password ) {
+    let mailOptions = {
+        to: email,
+        subject: 'Forgot Password',
+        html: "<b>Hello world?</b>",
+    }
+    transporter.sendMail(mailOptions, function (err,info) {
+        if(err)
+        {
+            console.log(err)
+        }
+        else
+        {
+            console.log('sendMailForgotPassword Sent')
+        }
+    })
+}
+
 function sendMailEditUserInformation( email ) {
     let mailOptions = {
         to: email,
@@ -69,5 +87,6 @@ transporter.verify( () => {
 module.exports = {
     sendMailRegister,
     sendMailEditUserInformation,
+    sendMailForgotPassword,
     sendMailChangePassword
 }
