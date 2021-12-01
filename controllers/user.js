@@ -7,6 +7,7 @@ var transporter = require('../helpers/mailer')
 const bcrypt = require('bcrypt-nodejs')
 const crypto = require('crypto')
 const async = require('async')
+const randomString = require('random-string')
 
 function singUp( req, res ) {
     console.log('SingUp')
@@ -166,8 +167,6 @@ function deleteOldPassword ( userPasswordList, cb ){
     console.log('deleteOldPassword')
     
     if ( userPasswordList.length > 4 ){
-        console.log('deleteOldPassword')
-
         let userPasswordID = userPasswordList[0]._id
 
         UserPasswordHistory.findById( userPasswordID, (err, userPassword) => {
@@ -292,10 +291,47 @@ function deleteUser ( req, res ){
     })
 }
 
+function forgotPassword ( req, res ){
+
+    let newPassword = randomString({length: 10})
+
+    console.log('newPassword ',newPassword)
+
+    User.findOne({ email: req.body.email }, (err, userFound) => { 
+        if (err) return res.status(500).send({message: err})
+        if (!userFound) return res.status(404).send({message: 'No existe el usuario'})
+        else {
+            UserPasswordHistory.find({ 
+                user: userFound._id
+            }, (err, userPasswordFound) => { 
+                if (err) return res.status(500).send({message: err})
+                if (!userPasswordFound) return res.status(404).send({message: 'No existe el usuario'})
+                else {
+                    deactivateOldPassword( userPasswordFound, function(cb, err) {
+                        if ( cb ){
+                            deleteOldPassword( userPasswordFound, function(cb, err) {
+                                if ( cb ){
+                                    saveNewPassword( userFound, newPassword, function(cb, err) {
+                                        if ( cb ){
+                                            res.status(200).send({ cb })
+                                            transporter.sendMailForgotPassword( userFound.email, newPassword )
+                                        }
+                                    })
+                                }
+                            })
+                        }
+                    })
+                }
+            })
+        }
+    })
+}
+
 module.exports = {
-    changePassword,
     singUp,
     singIn,
     inactivateUser,
+    forgotPassword,
+    changePassword,
     deleteUser
 }

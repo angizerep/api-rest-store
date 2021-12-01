@@ -44,7 +44,61 @@ function sendMailChangePassword( email ) {
     })
 }
 
+function sendMailForgotPassword( email, password ) {
+    let mailOptions = {
+        to: email,
+        subject: 'Forgot Password',
+        html: "<b>Hello world?</b>",
+    }
+    transporter.sendMail(mailOptions, function (err,info) {
+        if(err)
+        {
+            console.log(err)
+        }
+        else
+        {
+            console.log('sendMailForgotPassword Sent')
+        }
+    })
+}
+
 function sendMailEditUserInformation( email ) {
+    let mailOptions = {
+        to: email,
+        subject: 'Register PRUEBAAA',
+        html: "<b>Hello world?</b>",
+    }
+    transporter.sendMail(mailOptions, function (err,info) {
+        if(err)
+        {
+            console.log(err)
+        }
+        else
+        {
+            console.log('sendMailRegister Sent')
+        }
+    })
+}
+
+function sendMailInactivateUser( email ) {
+    let mailOptions = {
+        to: email,
+        subject: 'Register PRUEBAAA',
+        html: "<b>Hello world?</b>",
+    }
+    transporter.sendMail(mailOptions, function (err,info) {
+        if(err)
+        {
+            console.log(err)
+        }
+        else
+        {
+            console.log('sendMailRegister Sent')
+        }
+    })
+}
+
+function sendMailDeleteUser( email ) {
     let mailOptions = {
         to: email,
         subject: 'Register PRUEBAAA',
@@ -68,6 +122,9 @@ transporter.verify( () => {
 
 module.exports = {
     sendMailRegister,
-    sendMailEditUserInformation,
-    sendMailChangePassword
+    sendMailDeleteUser,
+    sendMailForgotPassword,
+    sendMailChangePassword,
+    sendMailInactivateUser,
+    sendMailEditUserInformation    
 }
