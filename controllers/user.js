@@ -307,44 +307,20 @@ function forgotPassword ( req, res ){
                 if (err) return res.status(500).send({message: err})
                 if (!userPasswordFound) return res.status(404).send({message: 'No existe el usuario'})
                 else {
-                    // // var size = Object.keys(userPasswordFound).length;
-                    // async.mapSeries(userPasswordFound, function (element, callback) {
-                    //     if ( isEqual === false ){
-                    //         bcrypt.compare(req.body.password, element.password, function(err, resp) {
-                    //             try {
-                    //                 if (resp){
-                    //                     isEqual = true
-                    //                     res.status(404).send({message: 'The password cannot be the same as the one used the last 5 times'})
-                    //                 }else {
-                    //                     isEqual = false
-                    //                     callback()
-                    //                 }
-                    //             } catch (err) {
-                    //                 if (err) return res.status(500).send({message: err})
-                    //             }
-                    //         })
-                    //     }
-                    //     else{
-                    //         callback()
-                    //     }
-                    // }, function() {
-                        // if ( isEqual === false ){
-                            deactivateOldPassword( userPasswordFound, function(cb, err) {
+                    deactivateOldPassword( userPasswordFound, function(cb, err) {
+                        if ( cb ){
+                            deleteOldPassword( userPasswordFound, function(cb, err) {
                                 if ( cb ){
-                                    deleteOldPassword( userPasswordFound, function(cb, err) {
+                                    saveNewPassword( userFound, newPassword, function(cb, err) {
                                         if ( cb ){
-                                            saveNewPassword( userFound, newPassword, function(cb, err) {
-                                                if ( cb ){
-                                                    res.status(200).send({ cb })
-                                                    transporter.sendMailForgotPassword( userFound.email, newPassword )
-                                                }
-                                            })
+                                            res.status(200).send({ cb })
+                                            transporter.sendMailForgotPassword( userFound.email, newPassword )
                                         }
                                     })
                                 }
                             })
-                        // }
-                    // })
+                        }
+                    })
                 }
             })
         }
