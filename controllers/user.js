@@ -188,7 +188,6 @@ function deleteOldPassword ( userPasswordList, cb ){
 
 function saveNewPassword ( user, password, cb ){
     console.log('saveNewPassword')
-
     const userPassword = new UserPasswordHistory ({
         user : user,
         password : password
@@ -204,7 +203,8 @@ function saveNewPassword ( user, password, cb ){
 }
 
 function inactivateUser ( req, res ){
-    
+    console.log('inactivateUser')
+
     let isEqual = false
 
     User.findOne({ email: req.body.email }, (err, userFound) => { 
@@ -227,7 +227,8 @@ function inactivateUser ( req, res ){
 }
 
 function deleteUser ( req, res ){
-    
+    console.log('inactivateUser')
+
     let isEqual = false
 
     User.findOne({ email: req.body.email }, (err, userFound) => { 
@@ -242,28 +243,11 @@ function deleteUser ( req, res ){
                 if (err) return res.status(500).send({message: err})
                 if (!userPasswordFound) return res.status(404).send({message: 'No existe el usuario'})
                 else {
-
-                    let userPassword = '$2a$10$6YrIcYuwV1dBWIiB/Em3WOzFVBlxAQGhxhjjqZ6CdUgmDs5s42K72' //req.body.password
-                    console.log('userPassword ',userPassword)
-
-
-                    console.log('userPasswordFound ', userPasswordFound)
-                    console.log('userPasswordFound leng ', userPasswordFound.lenght)
-
                     async.mapSeries( userPasswordFound, function(element , callback){
                         console.log('element ',element)
                         bcrypt.compare(req.body.password, element.password, function(err, resp) {
-                            // if (err){
-                            //     console.log('ERR Primero')
-                            //     res.status(404).send({message: 'passwords do not match'})
-                            // }
                             if (resp){
-                              // Send JWT
                                 console.log('IF ', resp)
-                                // res.status(200).send({
-                                //     message: 'Te has logueado correctamente',
-                                //     token: service.createToken(userFound)
-                                // })
                                 isEqual = true
                                 return callback
                             } else {
@@ -271,11 +255,9 @@ function deleteUser ( req, res ){
                                 console.log('Else ', resp)
                                 console.log('Error ', err)
                                 return callback
-                                // res.status(404).send({message: 'passwords do not match'})
                             }
                         })
                     } )
-
                     if (callback){
                         if ( isEqual === true ) {
                             res.status(404).send({message: 'MAL'})
