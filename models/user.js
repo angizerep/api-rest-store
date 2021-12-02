@@ -27,11 +27,6 @@ const UserSchema = new Schema ({
         match: [/^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/, 'Please fill a valid email address']
     },
     avatar : String,
-    // password: {
-    //     type: String,
-    //     select: false,
-    //     required: 'Password is required'
-    // },
     singUpDate: {
         type: Date,
         default: Date.now
@@ -54,22 +49,6 @@ const UserSchema = new Schema ({
         },
     },
 })
-
-// UserSchema.pre('save', function(next) {
-//     let user = this
-//     if (!user.isModified('password')) return next()
-
-//     bcrypt.genSalt(10, (err, salt) => {
-//         if (err) return next()
-
-//         bcrypt.hash(user.password, salt, null, (err, hash) =>{
-//             if (err) return next(err)
-
-//             user.password = hash
-//             next()
-//         })
-//     })
-// })
 
 UserSchema.methods.gravatar = function () {
     if (!this.email) return `https://gravatar.com/avatar/?s=200&d=retro`

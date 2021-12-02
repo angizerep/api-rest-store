@@ -39,15 +39,8 @@ const UserPasswordHistorySchema = new Schema ({
 
 UserPasswordHistorySchema.pre('save', function(next) {
     let userPassword = this
-        console.log('userPassword obtenido ',userPassword)
-
-    // if (!userPassword.isModified('password')) return next()
-
     bcrypt.genSalt(10, (err, salt) => {
         if (err) return next()
-
-        console.log(userPassword.password)
-
         bcrypt.hash(userPassword.password, salt, null, (err, hash) =>{
             if (err) return next(err)
             userPassword.password = hash
