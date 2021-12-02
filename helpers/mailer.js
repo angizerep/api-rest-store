@@ -75,7 +75,7 @@ function sendMailEditUserInformation( email ) {
         }
         else
         {
-            console.log('sendMailRegister Sent')
+            console.log('sendMailEditUserInformation Sent')
         }
     })
 }
@@ -93,7 +93,7 @@ function sendMailInactivateUser( email ) {
         }
         else
         {
-            console.log('sendMailRegister Sent')
+            console.log('sendMailInactivateUser Sent')
         }
     })
 }
@@ -111,7 +111,25 @@ function sendMailDeleteUser( email ) {
         }
         else
         {
-            console.log('sendMailRegister Sent')
+            console.log('sendMailDeleteUser Sent')
+        }
+    })
+}
+
+function sendMailInactivateUser( email ) {
+    let mailOptions = {
+        to: email,
+        subject: 'Inactivate User',
+        html: "<b>Hello world?</b>",
+    }
+    transporter.sendMail(mailOptions, function (err,info) {
+        if(err)
+        {
+            console.log(err)
+        }
+        else
+        {
+            console.log('sendMailInactivateUser Sent')
         }
     })
 }
