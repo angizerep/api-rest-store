@@ -29,7 +29,7 @@ function singUp( req, res ) {
                 console.log('Guardó el usuario')
                 const userPassword = new UserPasswordHistory ({
                     user : userSaved,
-                    password : req.body.password //userSaved.password
+                    password : req.body.password
                 })
                 userPassword.save((err, userPassword) => {
                     if (err) {
@@ -190,7 +190,8 @@ function saveNewPassword ( user, password, cb ){
     console.log('saveNewPassword')
     const userPassword = new UserPasswordHistory ({
         user : user,
-        password : password
+        password : password,
+        prueba: 'NO SEEE'
     })
     userPassword.save((err, userPassword) => {
         if (err) {
