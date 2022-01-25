@@ -3,7 +3,7 @@
 const express = require('express')
 const api = express.Router()
 const productController = require('../controllers/product')
-const auth = require('../middlewares/auth')
+// const auth = require('../middlewares/auth')
 const userController = require('../controllers/user')
 
 /**
@@ -14,7 +14,7 @@ api.route('/product')
     // .get(auth, productController.getAllProducts)
     .post( auth, productController.createProducts)
 
-api.route('/product/:productId')
+// api.route('/product/:productId')
     .get( auth, productController.getProductByID)
     .put( auth, productController.updateProduct)
     .delete( auth, productController.deleteProduct)
@@ -29,7 +29,7 @@ api.get('/private', auth, (req, res) => {
 /**
  * User Routes
  */
-// api.post('/singup', userController.singUp)
+api.post('/singup', userController.singUp)
 api.route('/singup')
     .post(userController.singUp)
 api.route('/singin')

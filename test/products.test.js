@@ -1,11 +1,16 @@
 const supertest = require('supertest')
-const app = require('./app')
+const express = require('express')
+const api1 = require('../routes/routesProducts')
+const productController = require('../controllers/product')
 
-const api = supertest(app)
+const app = express()
 
-test('products are returned as json', () => {
-    api.route('/product')
+const api = supertest(api1)
+
+test('products are returned as json', async() => {
+    await api1.route('/product')
         .get( productController.getAllProducts)
         .expect(200)
         .expect('Content-Type', /application\/json/)
 })
+
