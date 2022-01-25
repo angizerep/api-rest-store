@@ -10,13 +10,14 @@ const userController = require('../controllers/user')
  * Products Routes
  */
 api.route('/product')
-    .get(auth, productController.getAllProducts)
-    .post(auth, productController.createProducts)
+    .get( productController.getAllProducts)
+    // .get(auth, productController.getAllProducts)
+    .post( auth, productController.createProducts)
 
 api.route('/product/:productId')
-    .get(auth, productController.getProductByID)
-    .put(auth, productController.updateProduct)
-    .delete(auth, productController.deleteProduct)
+    .get( auth, productController.getProductByID)
+    .put( auth, productController.updateProduct)
+    .delete( auth, productController.deleteProduct)
 
 /**
  * Session Routes
